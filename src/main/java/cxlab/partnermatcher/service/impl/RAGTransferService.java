@@ -11,20 +11,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 @Service
 @Slf4j
 public class RAGTransferService {
     private OrtEnvironment ortEnv = OrtEnvironment.getEnvironment();
-    @Getter
-    private OrtSession session = ortEnv.createSession("model.onnx");
+    @Getter private OrtSession session = ortEnv.createSession("model.onnx");
 
-    private HuggingFaceTokenizer tokenizer = HuggingFaceTokenizer.newInstance(Paths.get(".","tokenizer.json"));
+    private HuggingFaceTokenizer tokenizer = HuggingFaceTokenizer.newInstance(Path.of(".","tokenizer.json"));
 
-    public RAGTransferService() throws OrtException, IOException {
-    }
+    public RAGTransferService() throws OrtException, IOException {}
     public float[] encode(String text) throws OrtException {
         return encode(new String[]{text})[0];
     }
