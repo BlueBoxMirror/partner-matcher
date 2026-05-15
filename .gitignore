@@ -34,3 +34,4 @@ build/
 
 ### Custom ###
 /src/main/resources/config.yml
+/rag_index
