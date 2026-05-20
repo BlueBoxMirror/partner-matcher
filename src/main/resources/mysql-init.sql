@@ -1,21 +1,3 @@
 CREATE DATABASE IF NOT EXISTS parter_matcher;
 USE partner_matcher;
 
-CREATE TABLE IF NOT EXISTS users (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(64) NOT NULL UNIQUE,
-    nickname VARCHAR(64) NULLABLE,
-    password BINARY(256) NOT NULL,
-    qq VARCHAR(16) NOT NULL,
-    icon VARCHAR NULLABLE,
-    description TEXT NULLABLE,
-    tags_embedding BLOB NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS tags (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    tag_name VARCHAR(16) NOT NULL,
-    tag_description VARCHAR(255) NULLABLE,
-    embedding BLOB NOT NULL
-);
