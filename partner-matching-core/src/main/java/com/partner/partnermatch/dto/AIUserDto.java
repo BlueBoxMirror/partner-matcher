@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+// AI 推荐用户dto
 public class AIUserDto {
     private Long id;
 
