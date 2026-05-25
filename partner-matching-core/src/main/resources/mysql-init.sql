@@ -26,12 +26,20 @@ CREATE TABLE user_collections (
 );
 
 -- 用户标签表
-CREATE TABLE user_tags (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- 标签ID
-    user_id INT NOT NULL, -- 用户ID
-    tag_id INT NOT NULL, -- 标签ID
-    INDEX user_id_index (user_id),
-);
+CREATE TABLE user_tag(
+    user_id BIGINT NOT NULL COMMENT '用户ID，关联user表的id',
+    tag_id  INT NOT NULL COMMENT '标签ID，关联tags表的id',
+    PRIMARY KEY (user_id, tag_id),
+    constraint user_tag_ibfk_1
+        foreign key (user_id) references user (id)
+            on delete cascade,
+    constraint user_tag_ibfk_2
+        foreign key (tag_id) references tags (id)
+            on delete cascade
+)comment '用户-标签关联表';
+
+create index tag_id
+    on user_tag (tag_id);
 
 -- 标签表
 CREATE TABLE tags(
