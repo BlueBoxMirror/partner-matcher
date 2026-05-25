@@ -1,0 +1,46 @@
+spring:
+  config:
+    import:
+      - classpath:config.yml
+  output:
+    ansi:
+      enabled: always
+  application:
+    name: partner-match
+  datasource:
+    url: jdbc:mysql://localhost:3306/friends?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${config.mysql.username}
+    password: ${config.mysql.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: 192.168.100.128
+      port: 6379
+      password: ${config.redis.password}
+      database: 1
+  # 不配 RabbitMQ 的同事设置 enabled: false 即可启动
+  rabbitmq:
+    enabled: true
+    host: localhost
+    port: 5672
+    username: ${config.rabbitmq.username:guest}
+    password: ${config.rabbitmq.password:guest}
+    virtual-host: /
+    connection-timeout: 10s
+    requested-heartbeat: 30
+    cache:
+      channel:
+        size: 5
+    listener:
+      simple:
+        concurrency: 1
+        prefetch: 1
+        default-requeue-rejected: false
+  ai:
+    openai:
+      api-key: ${config.openai.api-key:}
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-chat
+          temperature: 0.7
