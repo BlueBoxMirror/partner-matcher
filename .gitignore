@@ -1,18 +1,37 @@
-# IDEA 配置文件（不上传）
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
 .idea
-*.iml
 *.iws
+*.iml
 *.ipr
 
-# Maven 编译产物（不上传）
-target/
-mvnw
-mvnw.cmd
-.mvn/
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-# 日志文件（不上传）
-*.log
+### VS Code ###
+.vscode/
 
-# 本地配置文件（不上传，避免泄露密码）
-application-local.yml
-application-dev.yml
+### Custom ###
+**/src/main/resources/config.yml
+rag_index/
