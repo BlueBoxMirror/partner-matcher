@@ -26,8 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 @Service
 public class TagServiceImpl implements TagService {
 
@@ -98,9 +99,10 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<UserVO> recommend(long id, int pageNum, int pageSize) {
         try {
+            List<Map<String, Object>> tagMaps = userTagMapper.findTagsByUserIds(List.of(id));
             StringBuilder builder = new StringBuilder();
-            for (String tag : userMapper.selectById(id).getTags()) {
-                builder.append(tag).append(" ");
+            for (Map<String, Object> row : tagMaps) {
+                builder.append(row.get("tag")).append(" ");
             }
             float[] embedding = ragTransferService.encode(builder.toString());
             LuceneSearchResult result = null;
@@ -111,7 +113,9 @@ public class TagServiceImpl implements TagService {
                 result = luceneStorageService.searchByEmbedding(embedding, pageNum*pageSize);
                 result = luceneStorageService.searchByEmbedding(embedding, pageNum*pageSize, result.getLastScoreDoc());
             }
-            return userMapper.selectByIds(Collections.singleton(result.getUserIds())).stream().map(UserVO::new).toList();
+            List<Long> ids = new ArrayList<>();
+            for (long uid : result.getUserIds()) ids.add(uid);
+            return userMapper.selectBatchIds(ids).stream().map(UserVO::new).toList();
         } catch (OrtException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -129,9 +133,7 @@ public class TagServiceImpl implements TagService {
             ut.setTagId(tagId);
             userTagMapper.insert(ut);
         }
-        //用户表
         List<AITag> tags = tagMapper.selectByIds(tagIds).stream().toList();
-        userMapper.update(new UpdateWrapper<AIUser>().eq("id", userId).set("tags", tags));
         //lucene
         luceneStorageService.updateUserTags(userId, tags.stream().map(AITag::getTagName).toArray(String[]::new));
 

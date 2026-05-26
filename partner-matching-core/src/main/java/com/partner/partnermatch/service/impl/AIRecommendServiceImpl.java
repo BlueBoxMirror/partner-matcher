@@ -121,7 +121,7 @@ public class AIRecommendServiceImpl implements AIRecommendService {
             return Result.error(404, "用户不存在");
         }
         List<AITag> myTags = userTagMapper.findTagsByUserIds(Collections.singletonList(id)).stream()
-                .map(row -> new AITag((Integer) row.get("id"), (String) row.get("tag")))
+                .map(row -> new AITag((Integer) row.get("id"), (String) row.get("tag"), (String) row.get("tag_type")))
                 .collect(Collectors.toList());
 
         // 5. AI 推荐
@@ -201,7 +201,7 @@ public class AIRecommendServiceImpl implements AIRecommendService {
                 .collect(Collectors.groupingBy(
                         row -> (Long) row.get("user_id"),
                         Collectors.mapping(
-                                row -> new AITag((Integer) row.get("id"), (String) row.get("tag")),
+                                row -> new AITag((Integer) row.get("id"), (String) row.get("tag"), (String) row.get("tag_type")),
                                 Collectors.toList()
                         )
                 ));
