@@ -35,31 +35,23 @@ public class TagController {
     public Result<String> getTag(@PathVariable Integer tagId) {
         return Result.success(tagService.getTagNameById(tagId));
     }
+
     @GetMapping("/search/exact")
-    public Result<LuceneSearchResult> searchExact(@RequestParam String[] tags, @RequestParam int count) throws IOException {
-        return Result.success(tagService.searchExactByTags(tags, count));
-    }
-    @GetMapping("/search/exact")
-    public Result<LuceneSearchResult> searchExact(@RequestParam String[] tags, @RequestParam int count, @RequestParam ScoreDoc lastScoreDoc) throws IOException {
-        return Result.success(tagService.searchExactByTags(tags, count, lastScoreDoc));
+    public Result<LuceneSearchResult> searchExact(@RequestParam String[] tags, @RequestParam int count,@RequestParam(required = false) ScoreDoc lastScoreDoc) throws IOException {
+        if(lastScoreDoc == null) return Result.success(tagService.searchExactByTags(tags, count));
+        else return Result.success(tagService.searchExactByTags(tags, count, lastScoreDoc));
     }
 
     @GetMapping("/search/fuzzy")
-    public Result<LuceneSearchResult> searchFuzzy(@RequestParam String[] tags, @RequestParam int count) throws IOException {
-        return Result.success(tagService.searchFuzzyByTags(tags, count));
-    }
-    @GetMapping("/search/fuzzy")
-    public Result<LuceneSearchResult> searchFuzzy(@RequestParam String[] tags, @RequestParam int count, @RequestParam ScoreDoc lastScoreDoc) throws IOException {
+    public Result<LuceneSearchResult> searchFuzzy(@RequestParam String[] tags, @RequestParam int count, @RequestParam(required = false) ScoreDoc lastScoreDoc) throws IOException {
+        if(lastScoreDoc == null) return Result.success(tagService.searchFuzzyByTags(tags, count));
         return Result.success(tagService.searchFuzzyByTags(tags, count, lastScoreDoc));
     }
 
     @GetMapping("/search/embedding")
-    public Result<LuceneSearchResult> searchEmbedding(@RequestParam String[] tags, @RequestParam int count) throws IOException, OrtException {
-        return Result.success(tagService.searchByEmbedding(tags, count));
-    }
-    @GetMapping("/search/embedding")
-    public Result<LuceneSearchResult> searchEmbedding(@RequestParam String[] tags, @RequestParam int count, @RequestParam ScoreDoc lastScoreDoc) throws IOException, OrtException {
-        return Result.success(tagService.searchByEmbedding(tags, count, lastScoreDoc));
+    public Result<LuceneSearchResult> searchEmbedding(@RequestParam String[] tags, @RequestParam int count, @RequestParam(required = false) ScoreDoc lastScoreDoc) throws IOException, OrtException {
+        if(lastScoreDoc == null) return Result.success(tagService.searchByEmbedding(tags, count));
+        else return Result.success(tagService.searchByEmbedding(tags, count, lastScoreDoc));
     }
 
 }

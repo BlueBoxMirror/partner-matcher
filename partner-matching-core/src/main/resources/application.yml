@@ -8,7 +8,7 @@ spring:
   application:
     name: partner-match
   datasource:
-    url: jdbc:mysql://localhost:3306/friends?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/partner_matcher?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: ${config.mysql.username}
     password: ${config.mysql.password}
     driver-class-name: com.mysql.cj.jdbc.Driver

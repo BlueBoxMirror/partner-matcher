@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AITag {
+    public AITag(Integer id, String tagName) {
+        this.id = id;
+        this.tagName = tagName;
+    }
 
     @TableId(type = IdType.AUTO)
     private Integer id;

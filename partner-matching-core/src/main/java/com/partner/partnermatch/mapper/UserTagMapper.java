@@ -30,7 +30,7 @@ public interface UserTagMapper extends BaseMapper<AIUserTag> {
      * 一次 JOIN 查出指定用户的完整标签（含标签名），替代先查 user_tag 再查 tags 的两次往返
      */
     @Select("<script>" +
-            "SELECT ut.user_id, t.id, t.tag " +
+            "SELECT ut.user_id, t.id, t.tag_name AS tag, t.tag_type " +
             "FROM user_tag ut JOIN tags t ON t.id = ut.tag_id " +
             "WHERE ut.user_id IN " +
             "<foreach collection='userIds' item='id' open='(' separator=',' close=')'>#{id}</foreach>" +
