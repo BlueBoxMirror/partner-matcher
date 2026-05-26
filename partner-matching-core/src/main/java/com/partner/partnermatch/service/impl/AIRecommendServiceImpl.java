@@ -9,18 +9,17 @@ import com.partner.partnermatch.entity.ai.AITag;
 import com.partner.partnermatch.entity.ai.AIUser;
 import com.partner.partnermatch.mapper.UserMapper;
 import com.partner.partnermatch.mapper.UserTagMapper;
-import com.partner.partnermatch.rag.LuceneStorageService;
-import com.partner.partnermatch.rag.RAGTransferService;
-import com.partner.partnermatch.rag.pojo.LuceneSearchResult;
+import com.partner.partnermatch.pojo.LuceneSearchResult;
 import com.partner.partnermatch.service.AIRecommendService;
 import com.partner.partnermatch.service.AIChatService;
+import com.partner.partnermatch.service.LuceneStorageService;
+import com.partner.partnermatch.service.RAGTransferService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import org.springframework.data.redis.core.StringRedisTemplate;

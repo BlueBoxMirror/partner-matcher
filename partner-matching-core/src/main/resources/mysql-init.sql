@@ -11,7 +11,7 @@ CREATE TABLE users (
     avatar_uri TEXT, -- 头像URI
     profile TEXT, -- 个人简介
     collect_number INT NOT NULL DEFAULT 0, -- 收藏数（需要联合user_collections）
-    tags VARCHAR(47)  NOT NULL DEFAULT '[]', -- 标签（json array）
+    tags VARCHAR(128)  NOT NULL DEFAULT '[]', -- 标签（json array）
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 注册时间
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- 更新时间
 );

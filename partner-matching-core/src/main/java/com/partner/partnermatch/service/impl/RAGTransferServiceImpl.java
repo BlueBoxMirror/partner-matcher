@@ -1,4 +1,4 @@
-package com.partner.partnermatch.rag;
+package com.partner.partnermatch.service.impl;
 
 import ai.djl.huggingface.tokenizers.Encoding;
 import ai.djl.huggingface.tokenizers.HuggingFaceTokenizer;
@@ -6,6 +6,7 @@ import ai.onnxruntime.OnnxTensor;
 import ai.onnxruntime.OrtEnvironment;
 import ai.onnxruntime.OrtException;
 import ai.onnxruntime.OrtSession;
+import com.partner.partnermatch.service.RAGTransferService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,13 +17,13 @@ import java.util.HashMap;
 
 @Service
 @Slf4j
-public class RAGTransferService {
+public class RAGTransferServiceImpl implements RAGTransferService {
     private OrtEnvironment ortEnv = OrtEnvironment.getEnvironment();
     @Getter private OrtSession session = ortEnv.createSession("model.onnx");
 
     private HuggingFaceTokenizer tokenizer = HuggingFaceTokenizer.newInstance(Path.of(".","tokenizer.json"));
 
-    public RAGTransferService() throws OrtException, IOException {}
+    public RAGTransferServiceImpl() throws OrtException, IOException {}
     public float[] encode(String text) throws OrtException {
         return encode(new String[]{text})[0];
     }

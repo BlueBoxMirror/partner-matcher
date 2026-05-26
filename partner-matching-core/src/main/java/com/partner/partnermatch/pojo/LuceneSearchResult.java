@@ -1,4 +1,4 @@
-package com.partner.partnermatch.rag.pojo;
+package com.partner.partnermatch.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

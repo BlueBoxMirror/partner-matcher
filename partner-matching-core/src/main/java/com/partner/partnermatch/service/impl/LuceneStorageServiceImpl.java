@@ -1,7 +1,8 @@
-package com.partner.partnermatch.rag;
+package com.partner.partnermatch.service.impl;
 
 import ai.onnxruntime.OrtException;
-import com.partner.partnermatch.rag.pojo.LuceneSearchResult;
+import com.partner.partnermatch.pojo.LuceneSearchResult;
+import com.partner.partnermatch.service.LuceneStorageService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
@@ -15,16 +16,16 @@ import java.nio.file.Path;
 
 @Slf4j
 @Service
-public class LuceneStorageService {
+public class LuceneStorageServiceImpl implements LuceneStorageService {
     private String storagePath = "./rag_index";
-    @Autowired private RAGTransferService ragTransferService;
+    @Autowired private RAGTransferServiceImpl ragTransferService;
 
     private final Directory directory;
     private final IndexWriter writer;
     private IndexReader reader;
     private IndexSearcher searcher;
 
-    public LuceneStorageService() throws IOException {
+    public LuceneStorageServiceImpl() throws IOException {
         IndexWriterConfig config = new IndexWriterConfig();
         config.setOpenMode(IndexWriterConfig.OpenMode.CREATE_OR_APPEND);
         directory = FSDirectory.open(Path.of(storagePath));
