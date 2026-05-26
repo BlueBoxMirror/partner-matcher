@@ -20,6 +20,7 @@
     <modules>
         <module>partner-matching-rag</module>
         <module>partner-matching-core</module>
+        <module>partner-matching-security</module>
     </modules>
 
     <properties>
