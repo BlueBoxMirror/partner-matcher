@@ -1,0 +1,18 @@
+# IDEA 配置文件（不上传）
+.idea
+*.iml
+*.iws
+*.ipr
+
+# Maven 编译产物（不上传）
+target/
+mvnw
+mvnw.cmd
+.mvn/
+
+# 日志文件（不上传）
+*.log
+
+# 本地配置文件（不上传，避免泄露密码）
+application-local.yml
+application-dev.yml
