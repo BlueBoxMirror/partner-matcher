@@ -1,7 +1,7 @@
 package com.partner.partnermatch.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.partner.partnermatch.entity.UserTag;
+import com.partner.partnermatch.entity.ai.AIUserTag;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface UserTagMapper extends BaseMapper<UserTag> {
+public interface UserTagMapper extends BaseMapper<AIUserTag> {
 
     /**
      * 自连接查询：找到与当前用户共享标签的用户，按共享数量降序取 Top N

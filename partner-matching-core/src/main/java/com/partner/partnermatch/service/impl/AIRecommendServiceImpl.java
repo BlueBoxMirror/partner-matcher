@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.partner.partnermatch.common.Result;
 import com.partner.partnermatch.dto.AIRecommendResponse;
 import com.partner.partnermatch.dto.AIUserDto;
-import com.partner.partnermatch.entity.Tag;
-import com.partner.partnermatch.entity.User;
+import com.partner.partnermatch.entity.ai.AITag;
+import com.partner.partnermatch.entity.ai.AIUser;
 import com.partner.partnermatch.mapper.UserMapper;
 import com.partner.partnermatch.mapper.UserTagMapper;
 import com.partner.partnermatch.rag.LuceneStorageService;
@@ -117,12 +117,12 @@ public class AIRecommendServiceImpl implements AIRecommendService {
         }
 
         // 4. 当前用户信息
-        User currentUser = userMapper.selectById(id);
+        AIUser currentUser = userMapper.selectById(id);
         if (currentUser == null) {
             return Result.error(404, "用户不存在");
         }
-        List<Tag> myTags = userTagMapper.findTagsByUserIds(Collections.singletonList(id)).stream()
-                .map(row -> new Tag((Integer) row.get("id"), (String) row.get("tag")))
+        List<AITag> myTags = userTagMapper.findTagsByUserIds(Collections.singletonList(id)).stream()
+                .map(row -> new AITag((Integer) row.get("id"), (String) row.get("tag")))
                 .collect(Collectors.toList());
 
         // 5. AI 推荐
@@ -194,15 +194,15 @@ public class AIRecommendServiceImpl implements AIRecommendService {
 
         Collections.shuffle(top50Ids);
 
-        Map<Long, User> userMap = userMapper.selectList(
-                new QueryWrapper<User>().in("id", top50Ids)
-        ).stream().collect(Collectors.toMap(User::getId, u -> u));
+        Map<Long, AIUser> userMap = userMapper.selectList(
+                new QueryWrapper<AIUser>().in("id", top50Ids)
+        ).stream().collect(Collectors.toMap(AIUser::getId, u -> u));
 
-        Map<Long, List<Tag>> tagsMap = userTagMapper.findTagsByUserIds(top50Ids).stream()
+        Map<Long, List<AITag>> tagsMap = userTagMapper.findTagsByUserIds(top50Ids).stream()
                 .collect(Collectors.groupingBy(
                         row -> (Long) row.get("user_id"),
                         Collectors.mapping(
-                                row -> new Tag((Integer) row.get("id"), (String) row.get("tag")),
+                                row -> new AITag((Integer) row.get("id"), (String) row.get("tag")),
                                 Collectors.toList()
                         )
                 ));
@@ -213,6 +213,7 @@ public class AIRecommendServiceImpl implements AIRecommendService {
                         uid,
                         userMap.get(uid).getUsername(),
                         userMap.get(uid).getGender(),
+                        userMap.get(uid).getAvatarUri(),
                         null,
                         tagsMap.getOrDefault(uid, Collections.emptyList())
                 ))
@@ -240,20 +241,20 @@ public class AIRecommendServiceImpl implements AIRecommendService {
         return cleaned.trim();
     }
 
-    private String buildPrompt(User currentUser, List<Tag> myTags, List<AIUserDto> candidates) {
+    private String buildPrompt(AIUser currentUser, List<AITag> myTags, List<AIUserDto> candidates) {
         try {
             Map<String, Object> currentUserJson = new LinkedHashMap<>();
             currentUserJson.put("昵称", currentUser.getUsername());
-            currentUserJson.put("性别", "b".equals(currentUser.getGender()) ? "男" : "女");
-            currentUserJson.put("标签", myTags.stream().map(Tag::getTag).collect(Collectors.toList()));
+            currentUserJson.put("性别", Integer.valueOf(1).equals(currentUser.getGender()) ? "男" : "女");
+            currentUserJson.put("标签", myTags.stream().map(AITag::getTagName).collect(Collectors.toList()));
 
             List<Map<String, Object>> candidateList = new ArrayList<>();
             for (AIUserDto c : candidates) {
                 Map<String, Object> item = new LinkedHashMap<>();
                 item.put("id", c.getId());
                 item.put("昵称", c.getUsername());
-                item.put("性别", "b".equals(c.getGender()) ? "男" : "女");
-                item.put("标签", c.getTags().stream().map(Tag::getTag).collect(Collectors.toList()));
+                item.put("性别", Integer.valueOf(1).equals(c.getGender()) ? "男" : "女");
+                item.put("标签", c.getTags().stream().map(AITag::getTagName).collect(Collectors.toList()));
                 candidateList.add(item);
             }
 

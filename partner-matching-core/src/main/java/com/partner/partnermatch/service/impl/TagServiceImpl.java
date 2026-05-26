@@ -1,7 +1,7 @@
 package com.partner.partnermatch.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.partner.partnermatch.entity.UserTag;
+import com.partner.partnermatch.entity.ai.AIUserTag;
 import com.partner.partnermatch.event.TagChangedEvent;
 import com.partner.partnermatch.mapper.UserTagMapper;
 import com.partner.partnermatch.service.TagService;
@@ -24,10 +24,10 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public void updateTags(Long userId, List<Integer> tagIds) {
-        userTagMapper.delete(new QueryWrapper<UserTag>().eq("user_id", userId));
+        userTagMapper.delete(new QueryWrapper<AIUserTag>().eq("user_id", userId));
 
         for (Integer tagId : tagIds) {
-            UserTag ut = new UserTag();
+            AIUserTag ut = new AIUserTag();
             ut.setUserId(userId);
             ut.setTagId(tagId);
             userTagMapper.insert(ut);

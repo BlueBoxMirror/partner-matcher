@@ -1,4 +1,4 @@
-package com.partner.partnermatch.entity;
+package com.partner.partnermatch.entity.ai;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -8,20 +8,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@TableName("tags")
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("user")
-public class User {
+public class AITag {
 
-    @TableId(type = IdType.ASSIGN_ID)   //雪花
-    private Long id;
+    @TableId(type = IdType.AUTO)
+    private Integer id;
 
-    private String username;
-
-    private String gender;
-
-    private String introduction;
-
-    private String avatar;
-
+    private String tagName;
 }

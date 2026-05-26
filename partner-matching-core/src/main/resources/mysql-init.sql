@@ -3,11 +3,11 @@ USE partner_matcher;
 
 -- 用户表
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- 用户ID
+    id bigint AUTO_INCREMENT PRIMARY KEY, -- 用户ID
     qq_email VARCHAR(32) NOT NULL UNIQUE, -- QQ邮箱
     username VARCHAR(32) NOT NULL UNIQUE, -- 用户名
     password BINARY(32) NOT NULL, -- SHA256混淆密码
-    gender TINYINT, -- 性别
+    gender TINYINT, -- 性别  0为女 1为男
     avatar_uri TEXT, -- 头像URI
     profile TEXT, -- 个人简介
     collect_number INT NOT NULL DEFAULT 0, -- 收藏数（需要联合user_collections）
@@ -31,7 +31,7 @@ CREATE TABLE user_tag(
     tag_id  INT NOT NULL COMMENT '标签ID，关联tags表的id',
     PRIMARY KEY (user_id, tag_id),
     constraint user_tag_ibfk_1
-        foreign key (user_id) references user (id)
+        foreign key (user_id) references users (id)
             on delete cascade,
     constraint user_tag_ibfk_2
         foreign key (tag_id) references tags (id)

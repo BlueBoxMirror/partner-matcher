@@ -1,6 +1,6 @@
 package com.partner.partnermatch.dto;
 
-import com.partner.partnermatch.entity.Tag;
+import com.partner.partnermatch.entity.ai.AITag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,9 +16,11 @@ public class AIUserDto {
 
     private String username;
 
-    private String gender;
+    private Integer gender;
+
+    private String avatar;
 
     private String background;
 
-    private List<Tag> tags;
+    private List<AITag> tags;
 }
