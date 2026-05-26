@@ -1,4 +1,4 @@
-package com.partner.annotation;
+package com.partner.partnermatch.annotation;
 
 import java.lang.annotation.*;
 

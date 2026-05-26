@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS parter_matcher;
+CREATE DATABASE IF NOT EXISTS partner_matcher;
 USE partner_matcher;
 
 -- 用户表
@@ -68,10 +68,21 @@ CREATE TABLE teams (
     password VARCHAR(8), -- 密码
     description TEXT, -- 描述
     max_num INT NOT NULL DEFAULT 10, -- 最大人数
+    member_num INT NOT NULL DEFAULT 1, -- 当前人数
     expire_time TIMESTAMP, -- 过期时间
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 创建时间
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- 更新时间
     is_deleted TINYINT NOT NULL DEFAULT 0, -- 是否删除
     INDEX creator_user_id_index (creator_user_id),
     INDEX team_name_index (team_name)
+);
+
+-- 队伍成员表
+CREATE TABLE team_members (
+    id INT AUTO_INCREMENT PRIMARY KEY, -- 表ID
+    team_id INT NOT NULL, -- 队伍ID
+    user_id INT NOT NULL, -- 用户ID
+    join_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 加入时间
+    INDEX team_id_index (team_id),
+    INDEX user_id_index (user_id)
 );

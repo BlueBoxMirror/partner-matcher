@@ -1,4 +1,4 @@
-package com.partner.context;
+package com.partner.partnermatch.context;
 
 public class UserContext {
     private static final java.lang.ThreadLocal<Long> USER_ID_HOLDER = new java.lang.ThreadLocal<>();

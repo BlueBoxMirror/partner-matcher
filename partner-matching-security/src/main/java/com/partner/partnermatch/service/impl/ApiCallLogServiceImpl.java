@@ -1,8 +1,8 @@
-package com.partner.service.impl;
+package com.partner.partnermatch.service.impl;
 
-import com.partner.entity.ApiCallLog;
-import com.partner.mapper.ApiCallLogMapper;
-import com.partner.service.ApiCallLogService;
+import com.partner.partnermatch.entity.ApiCallLog;
+import com.partner.partnermatch.mapper.ApiCallLogMapper;
+import com.partner.partnermatch.service.ApiCallLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

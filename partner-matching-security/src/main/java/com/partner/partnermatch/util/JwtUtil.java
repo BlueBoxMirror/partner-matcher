@@ -1,4 +1,4 @@
-package com.partner.util;
+package com.partner.partnermatch.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

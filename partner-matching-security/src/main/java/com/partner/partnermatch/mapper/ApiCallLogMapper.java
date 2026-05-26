@@ -1,7 +1,7 @@
-package com.partner.mapper;
+package com.partner.partnermatch.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.partner.entity.ApiCallLog;
+import com.partner.partnermatch.entity.ApiCallLog;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

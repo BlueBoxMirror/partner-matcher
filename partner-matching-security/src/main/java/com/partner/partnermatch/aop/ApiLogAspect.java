@@ -1,10 +1,10 @@
-package com.partner.aop;
+package com.partner.partnermatch.aop;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.partner.context.UserContext;
-import com.partner.entity.ApiCallLog;
-import com.partner.service.ApiCallLogService;
+import com.partner.partnermatch.context.UserContext;
+import com.partner.partnermatch.entity.ApiCallLog;
+import com.partner.partnermatch.service.ApiCallLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

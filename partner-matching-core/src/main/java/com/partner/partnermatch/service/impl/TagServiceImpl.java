@@ -4,6 +4,7 @@ import ai.onnxruntime.OrtException;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.partner.partnermatch.entity.ai.AITag;
 import com.partner.partnermatch.entity.ai.AIUser;
 import com.partner.partnermatch.entity.ai.AIUserTag;
@@ -12,6 +13,8 @@ import com.partner.partnermatch.mapper.TagMapper;
 import com.partner.partnermatch.mapper.UserMapper;
 import com.partner.partnermatch.mapper.UserTagMapper;
 import com.partner.partnermatch.pojo.LuceneSearchResult;
+import com.partner.partnermatch.pojo.vo.TagVO;
+import com.partner.partnermatch.pojo.vo.UserVO;
 import com.partner.partnermatch.service.LuceneStorageService;
 import com.partner.partnermatch.service.RAGTransferService;
 import com.partner.partnermatch.service.TagService;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 @Service
 public class TagServiceImpl implements TagService {
@@ -92,6 +96,28 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
+    public List<UserVO> recommend(long id, int pageNum, int pageSize) {
+        try {
+            StringBuilder builder = new StringBuilder();
+            for (String tag : userMapper.selectById(id).getTags()) {
+                builder.append(tag).append(" ");
+            }
+            float[] embedding = ragTransferService.encode(builder.toString());
+            LuceneSearchResult result = null;
+            if(pageNum==0) {
+                result = luceneStorageService.searchByEmbedding(embedding, pageNum);
+            }
+            else{
+                result = luceneStorageService.searchByEmbedding(embedding, pageNum*pageSize);
+                result = luceneStorageService.searchByEmbedding(embedding, pageNum*pageSize, result.getLastScoreDoc());
+            }
+            return userMapper.selectByIds(Collections.singleton(result.getUserIds())).stream().map(UserVO::new).toList();
+        } catch (OrtException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     @Transactional
     public void updateTags(Long userId, List<Integer> tagIds) throws IOException, OrtException {
         //连表
@@ -112,5 +138,15 @@ public class TagServiceImpl implements TagService {
 
         //触发缓存更新
         eventPublisher.publishEvent(new TagChangedEvent(this, userId));
+    }
+
+    @Override
+    public List<TagVO> getAllTags() {
+        return tagMapper.selectList(new QueryWrapper<AITag>().select("id", "tag_name", "tag_type")).stream().map(TagVO::new).toList();
+    }
+
+    @Override
+    public String getTagNameById(Integer tagId) {
+        return tagMapper.selectById(tagId).getTagName();
     }
 }

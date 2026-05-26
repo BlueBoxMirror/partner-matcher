@@ -73,6 +73,11 @@
                 <artifactId>partner-matching-rag</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.partner</groupId>
+                <artifactId>partner-matching-security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

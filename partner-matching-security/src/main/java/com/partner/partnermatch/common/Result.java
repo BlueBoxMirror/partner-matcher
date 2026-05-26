@@ -1,4 +1,4 @@
-package com.partner.common;
+package com.partner.partnermatch.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

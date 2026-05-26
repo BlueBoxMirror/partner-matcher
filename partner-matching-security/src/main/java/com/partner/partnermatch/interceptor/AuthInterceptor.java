@@ -1,10 +1,10 @@
-package com.partner.interceptor;
+package com.partner.partnermatch.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.partner.annotation.LoginRequired;
-import com.partner.common.Result;
-import com.partner.context.UserContext;
-import com.partner.util.JwtUtil;
+import com.partner.partnermatch.annotation.LoginRequired;
+import com.partner.partnermatch.common.Result;
+import com.partner.partnermatch.context.UserContext;
+import com.partner.partnermatch.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

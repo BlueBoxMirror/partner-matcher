@@ -17,4 +17,5 @@ public class AITag {
     private Integer id;
 
     private String tagName;
+    private String tagType;
 }

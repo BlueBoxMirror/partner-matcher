@@ -20,6 +20,10 @@
             <groupId>com.partner</groupId>
             <artifactId>partner-matching-rag</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.partner</groupId>
+            <artifactId>partner-matching-security</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

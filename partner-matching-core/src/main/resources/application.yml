@@ -44,3 +44,7 @@ spring:
         options:
           model: deepseek-chat
           temperature: 0.7
+
+jwt:
+  secret: partner-matching-jwt-secret-2025-must-be-at-least-256-bits-long
+  expiration: 86400000

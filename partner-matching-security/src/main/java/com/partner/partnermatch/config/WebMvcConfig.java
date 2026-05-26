@@ -1,6 +1,6 @@
-package com.partner.config;
+package com.partner.partnermatch.config;
 
-import com.partner.interceptor.AuthInterceptor;
+import com.partner.partnermatch.interceptor.AuthInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
