@@ -4,10 +4,12 @@
 
 <mapper namespace="cxlab.partnermatcher.mapper.UserMapper">
 
-    <select id="selectByAccountOrEmail" resultType="cxlab.partnermatcher.pojo.User">
+    <!-- 1. 把id改成和接口方法名完全一致：selectByUsernameOrEmail -->
+    <select id="selectByUsernameOrEmail" resultType="cxlab.partnermatcher.pojo.User">
         SELECT id, username, qq_email AS qqEmail, password
         FROM users
-        WHERE username = #{account} OR qq_email = #{account}
+        <!-- 2. 把#{account}改成#{keyword}，和接口里的@Param("keyword")对应 -->
+        WHERE username = #{keyword} OR qq_email = #{keyword}
     </select>
 
 </mapper>

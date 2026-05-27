@@ -23,17 +23,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserLoginResponse login(UserLoginRequest loginRequest) {
-        String account = loginRequest.getAccount();
+        // 1. 统一变量名，和 UserLoginRequest 里的 username 对应
+        String username = loginRequest.getUsername();
         String pwd = loginRequest.getPassword();
-        if (account == null || account.trim().isEmpty() || pwd == null || pwd.trim().isEmpty()) {
+
+        // 2. 参数校验（现在 username 和 password 能正常解析了）
+        if (username == null || username.trim().isEmpty() || pwd == null || pwd.trim().isEmpty()) {
             throw new RuntimeException("账号或密码不能为空");
         }
 
-        User user = userMapper.selectByAccountOrEmail(account);
+        // 3. 修改为查询 username 或 qq_email，和数据库字段对应
+        User user = userMapper.selectByUsernameOrEmail(username);
         if (user == null) {
             throw new RuntimeException("用户不存在");
         }
 
+        // 4. 密码校验部分不用改，因为 SHA-256 生成的 32 字节和数据库 binary(32) 匹配
         try {
             MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
             byte[] inputPwdBytes = sha256.digest(pwd.getBytes());
