@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,13 +15,16 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("users")
+@TableName(value = "users",autoResultMap = true)
+@Builder
 public class AIUser {
 
     @TableId(type = IdType.AUTO)
     private Long id;
 
+    private String qqEmail;
     private String username;
+    private byte[] password;
 
     private Integer gender;
 

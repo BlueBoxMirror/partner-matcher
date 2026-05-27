@@ -3,8 +3,10 @@ package com.partner.partnermatch.service.impl;
 import ai.onnxruntime.OrtException;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.partner.partnermatch.entity.ai.AITag;
 import com.partner.partnermatch.entity.ai.AIUser;
 import com.partner.partnermatch.entity.ai.AIUserTag;
@@ -27,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 @Service
@@ -44,6 +47,8 @@ public class TagServiceImpl implements TagService {
 
     @Autowired private LuceneStorageService luceneStorageService;
     @Autowired private RAGTransferService ragTransferService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public LuceneSearchResult searchByTag(String tag, int count) throws IOException {
@@ -123,7 +128,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
-    public void updateTags(Long userId, List<Integer> tagIds) throws IOException, OrtException {
+    public void updateTags(Long userId, List<Integer> _tagIds) throws IOException, OrtException {
+        List<Integer> tagIds = new HashSet<>(_tagIds).stream().toList();
         //连表
         userTagMapper.delete(new QueryWrapper<AIUserTag>().eq("user_id", userId));
 
@@ -133,9 +139,12 @@ public class TagServiceImpl implements TagService {
             ut.setTagId(tagId);
             userTagMapper.insert(ut);
         }
-        List<AITag> tags = tagMapper.selectByIds(tagIds).stream().toList();
+
+        List<String> tags = tagIds.isEmpty() ? List.of() : tagMapper.selectByIds(tagIds).stream().map(AITag::getTagName).toList();
+        //用户表
+        userMapper.update(new UpdateWrapper<AIUser>().eq("id", userId).set("tags",objectMapper.writeValueAsString(tags)));
         //lucene
-        luceneStorageService.updateUserTags(userId, tags.stream().map(AITag::getTagName).toArray(String[]::new));
+        luceneStorageService.updateUserTags(userId, tags.toArray(String[]::new));
 
 
         //触发缓存更新

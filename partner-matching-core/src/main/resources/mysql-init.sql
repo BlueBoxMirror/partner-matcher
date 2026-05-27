@@ -25,22 +25,6 @@ CREATE TABLE user_collections (
     INDEX user_id_index (user_id)
 );
 
--- 用户标签表
-CREATE TABLE user_tag(
-    user_id BIGINT NOT NULL COMMENT '用户ID，关联user表的id',
-    tag_id  INT NOT NULL COMMENT '标签ID，关联tags表的id',
-    PRIMARY KEY (user_id, tag_id),
-    constraint user_tag_ibfk_1
-        foreign key (user_id) references users (id)
-            on delete cascade,
-    constraint user_tag_ibfk_2
-        foreign key (tag_id) references tags (id)
-            on delete cascade
-)comment '用户-标签关联表';
-
-create index tag_id
-    on user_tag (tag_id);
-
 -- 标签表
 CREATE TABLE tags(
     id INT AUTO_INCREMENT PRIMARY KEY, -- 标签ID
@@ -48,6 +32,22 @@ CREATE TABLE tags(
     tag_type VARCHAR(8) NOT NULL, -- 标签类型
     INDEX tag_type_index (tag_type)
 );
+
+-- 用户标签表
+CREATE TABLE user_tag(
+     user_id BIGINT NOT NULL COMMENT '用户ID，关联user表的id',
+     tag_id  INT NOT NULL COMMENT '标签ID，关联tags表的id',
+     PRIMARY KEY (user_id, tag_id),
+     constraint user_tag_ibfk_1
+         foreign key (user_id) references users (id)
+             on delete cascade,
+     constraint user_tag_ibfk_2
+         foreign key (tag_id) references tags (id)
+             on delete cascade
+)comment '用户-标签关联表';
+
+create index tag_id
+    on user_tag (tag_id);
 
 CREATE TABLE `api_log` (
     `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
