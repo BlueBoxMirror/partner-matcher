@@ -13,7 +13,7 @@ public class UserVO {
     private List<String> tags;
     private String avatarUri;
     private String profile;
-    private int gender;
+    private Integer gender;
 
     public UserVO(AIUser user){
         this.id = user.getId();

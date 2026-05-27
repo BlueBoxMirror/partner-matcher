@@ -3,8 +3,10 @@ package com.partner.partnermatch.service.impl;
 import ai.onnxruntime.OrtException;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.partner.partnermatch.entity.ai.AITag;
 import com.partner.partnermatch.entity.ai.AIUser;
 import com.partner.partnermatch.entity.ai.AIUserTag;
@@ -13,6 +15,7 @@ import com.partner.partnermatch.mapper.TagMapper;
 import com.partner.partnermatch.mapper.UserMapper;
 import com.partner.partnermatch.mapper.UserTagMapper;
 import com.partner.partnermatch.pojo.LuceneSearchResult;
+import com.partner.partnermatch.pojo.vo.LuceneSearchVO;
 import com.partner.partnermatch.pojo.vo.TagVO;
 import com.partner.partnermatch.pojo.vo.UserVO;
 import com.partner.partnermatch.service.LuceneStorageService;
@@ -27,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 @Service
@@ -44,60 +48,68 @@ public class TagServiceImpl implements TagService {
 
     @Autowired private LuceneStorageService luceneStorageService;
     @Autowired private RAGTransferService ragTransferService;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    @Override
-    public LuceneSearchResult searchByTag(String tag, int count) throws IOException {
-        return luceneStorageService.searchByTag(tag, count);
+    private LuceneSearchVO toVO(LuceneSearchResult result){
+        ArrayList<Long> ids = new ArrayList<>();
+        for (long uid : result.getUserIds()) ids.add(uid);
+        return new LuceneSearchVO(userMapper.selectByIds(ids).stream().map(UserVO::new).toList(), result.getLastScoreDoc());
     }
 
     @Override
-    public LuceneSearchResult searchByTag(String tag, int count, ScoreDoc lastScoreDoc) throws IOException {
-        return luceneStorageService.searchByTag(tag, count, lastScoreDoc);
+    public LuceneSearchVO searchByTag(String tag, int count) throws IOException {
+        return toVO(luceneStorageService.searchByTag(tag, count));
     }
 
     @Override
-    public LuceneSearchResult searchByEmbedding(String[] tags, int count) throws IOException, OrtException {
+    public LuceneSearchVO searchByTag(String tag, int count, ScoreDoc lastScoreDoc) throws IOException {
+        return toVO(luceneStorageService.searchByTag(tag, count, lastScoreDoc));
+    }
+
+    @Override
+    public LuceneSearchVO searchByEmbedding(String[] tags, int count) throws IOException, OrtException {
         StringBuilder builder = new StringBuilder();
         for (String tag : tags) {
             builder.append(tag).append(" ");
         }
         float[] embedding = ragTransferService.encode(builder.toString());
-        return luceneStorageService.searchByEmbedding(embedding, count);
+        return toVO(luceneStorageService.searchByEmbedding(embedding, count));
     }
 
     @Override
-    public LuceneSearchResult searchByEmbedding(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException, OrtException {
+    public LuceneSearchVO searchByEmbedding(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException, OrtException {
         StringBuilder builder = new StringBuilder();
         for (String tag : tags) {
             builder.append(tag).append(" ");
         }
         float[] embedding = ragTransferService.encode(builder.toString());
-        return luceneStorageService.searchByEmbedding(embedding, count, lastScoreDoc);
+        return toVO(luceneStorageService.searchByEmbedding(embedding, count, lastScoreDoc));
     }
 
     @Override
-    public LuceneSearchResult searchExactByTags(String[] tags, int count) throws IOException {
-        return luceneStorageService.searchExactByTags(tags, count);
+    public LuceneSearchVO searchExactByTags(String[] tags, int count) throws IOException {
+        return toVO(luceneStorageService.searchExactByTags(tags, count));
     }
 
     @Override
-    public LuceneSearchResult searchExactByTags(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException {
-        return luceneStorageService.searchExactByTags(tags, count, lastScoreDoc);
+    public LuceneSearchVO searchExactByTags(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException {
+        return toVO(luceneStorageService.searchExactByTags(tags, count, lastScoreDoc));
     }
 
     @Override
-    public LuceneSearchResult searchFuzzyByTags(String[] tags, int count) throws IOException {
-        return luceneStorageService.searchFuzzyByTags(tags, count);
+    public LuceneSearchVO searchFuzzyByTags(String[] tags, int count) throws IOException {
+        return toVO(luceneStorageService.searchFuzzyByTags(tags, count));
     }
 
     @Override
-    public LuceneSearchResult searchFuzzyByTags(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException {
-        return luceneStorageService.searchFuzzyByTags(tags, count, lastScoreDoc);
+    public LuceneSearchVO searchFuzzyByTags(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException {
+        return toVO(luceneStorageService.searchFuzzyByTags(tags, count, lastScoreDoc));
     }
 
 
     @Override
-    public List<UserVO> recommend(long id, int pageNum, int pageSize) {
+    public LuceneSearchVO recommend(long id, int pageNum, int pageSize) {
         try {
             List<Map<String, Object>> tagMaps = userTagMapper.findTagsByUserIds(List.of(id));
             StringBuilder builder = new StringBuilder();
@@ -115,7 +127,8 @@ public class TagServiceImpl implements TagService {
             }
             List<Long> ids = new ArrayList<>();
             for (long uid : result.getUserIds()) ids.add(uid);
-            return userMapper.selectBatchIds(ids).stream().map(UserVO::new).toList();
+            List<UserVO> users=userMapper.selectBatchIds(ids).stream().map(UserVO::new).toList();
+            return new LuceneSearchVO(users, result.getLastScoreDoc());
         } catch (OrtException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -123,7 +136,8 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
-    public void updateTags(Long userId, List<Integer> tagIds) throws IOException, OrtException {
+    public void updateTags(Long userId, List<Integer> _tagIds) throws IOException, OrtException {
+        List<Integer> tagIds = new HashSet<>(_tagIds).stream().toList();
         //连表
         userTagMapper.delete(new QueryWrapper<AIUserTag>().eq("user_id", userId));
 
@@ -133,9 +147,12 @@ public class TagServiceImpl implements TagService {
             ut.setTagId(tagId);
             userTagMapper.insert(ut);
         }
-        List<AITag> tags = tagMapper.selectByIds(tagIds).stream().toList();
+
+        List<String> tags = tagIds.isEmpty() ? List.of() : tagMapper.selectByIds(tagIds).stream().map(AITag::getTagName).toList();
+        //用户表
+        userMapper.update(new UpdateWrapper<AIUser>().eq("id", userId).set("tags",objectMapper.writeValueAsString(tags)));
         //lucene
-        luceneStorageService.updateUserTags(userId, tags.stream().map(AITag::getTagName).toArray(String[]::new));
+        luceneStorageService.updateUserTags(userId, tags.toArray(String[]::new));
 
 
         //触发缓存更新
