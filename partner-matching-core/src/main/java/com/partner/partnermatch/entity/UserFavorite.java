@@ -3,7 +3,6 @@ package com.partner.partnermatch.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import java.util.Date;
-import java.util.LongSummaryStatistics;
 
 @Data
 @TableName("user_collections")
