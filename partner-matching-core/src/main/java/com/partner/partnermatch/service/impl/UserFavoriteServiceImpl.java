@@ -23,7 +23,7 @@ public class UserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper, Use
     }
 
     @Override
-    public boolean toggleCollection(Long userId, Integer collectUserId) {
+    public boolean toggleCollection(Long userId, Long collectUserId) {
         // 不能收藏自己
         if (userId.equals(collectUserId)) {
             throw new RuntimeException("不能收藏自己");
@@ -41,7 +41,7 @@ public class UserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper, Use
         }
     }
 
-    public boolean isCollected(Long userId, Integer collectUserId) {
+    public boolean isCollected(Long userId, Long collectUserId) {
         return lambdaQuery()
                 .eq(UserFavorite::getUserId, userId)
                 .eq(UserFavorite::getCollectUserId, collectUserId)
@@ -53,8 +53,7 @@ public class UserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper, Use
         return userFavoriteMapper.listCollectUserIds(userId);
     }
 
-    @Override
-    public boolean deleteFavorite(Long userId, Integer collectUserId) {
+    public boolean deleteFavorite(Long userId, Long collectUserId) {
         return lambdaUpdate()
                 .eq(UserFavorite::getUserId, userId)
                 .eq(UserFavorite::getCollectUserId, collectUserId)
@@ -74,7 +73,7 @@ public class UserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper, Use
                 .map(favorite -> {
                     FavoriteUserDto dto = new FavoriteUserDto();
                     dto.setId(Math.toIntExact(favorite.getId()));
-                    dto.setCollectUserId(Math.toIntExact(favorite.getCollectUserId()));
+                    dto.setCollectUserId((long) Math.toIntExact(favorite.getCollectUserId()));
                     dto.setCreatedAt(favorite.getCreatedAt());
                     // 后续补充用户信息时，在这里set username、avatar、tags
                     dto.setUsername("");

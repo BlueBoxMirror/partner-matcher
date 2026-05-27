@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class FavoriteToggleRequest {
     // 被收藏的用户ID
-    private Integer collectUserId;
+    public Long collectUserId;
 }

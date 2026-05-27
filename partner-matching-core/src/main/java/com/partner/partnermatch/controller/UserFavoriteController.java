@@ -53,7 +53,7 @@ public class UserFavoriteController {
     @GetMapping("/check")
     public Result<Boolean> checkCollected(@RequestParam Integer collectUserId, HttpServletRequest httpRequest) {
         Long userId =getLoginUserId(httpRequest);
-        boolean collected = userFavoriteService.isCollected(userId, Math.toIntExact(collectUserId));
+        boolean collected = userFavoriteService.isCollected(userId, (long) Math.toIntExact(collectUserId));
         return Result.success(collected);
     }
 
