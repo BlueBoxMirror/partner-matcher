@@ -6,8 +6,8 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
-        "com.partner.core",      // 扫描业务模块
-        "com.partner.security"   // 扫描你的安全模块
+        "com.partner.core",
+        "com.partner.security" 
 })
 public class PartnerMatchingApplication {
     public static void main(String[] args) {
