@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 
 @Slf4j
 @Service
@@ -77,11 +78,15 @@ public class LuceneStorageServiceImpl implements LuceneStorageService {
 
     private LuceneSearchResult topDocs2LuceneSearchResult(TopDocs results) throws IOException {
         long[] userIds = new long[results.scoreDocs.length];
+        HashMap<Long, ScoreDoc> scoreDocMap = new HashMap<>();
         for (int i=0; i < results.scoreDocs.length; i++) {
             Document doc = searcher.storedFields().document(results.scoreDocs[i].doc);
             userIds[i] = Long.valueOf(doc.get("userId"));
+
+            scoreDocMap.put(userIds[i],results.scoreDocs[i]);
         }
-        return new LuceneSearchResult(userIds, results.scoreDocs[results.scoreDocs.length-1]);
+
+        return new LuceneSearchResult(userIds, scoreDocMap , results.scoreDocs.length==0?null:results.scoreDocs[results.scoreDocs.length-1]);
     }
 
     public LuceneSearchResult searchByTag(String tag, int count) throws IOException {

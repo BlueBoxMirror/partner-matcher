@@ -7,21 +7,22 @@ import com.partner.partnermatch.mapper.UserMapper;
 import com.partner.partnermatch.pojo.vo.LuceneSearchVO;
 import com.partner.partnermatch.pojo.vo.UserVO;
 import com.partner.partnermatch.service.TagService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
     @Autowired private TagService tagService;
     @GetMapping("/recommend")
-    public Result<LuceneSearchVO> recommend(int pageNum, int pageSize){
-        long id = UserContext.getUserId();
-        return Result.success(tagService.recommend(id,pageNum,pageSize));
+    public Result<LuceneSearchVO> recommend(@RequestParam(required = false,defaultValue = "0") Integer pageNum,@RequestParam(required = false,defaultValue = "10") Integer pageSize){
+        long id = 53;//UserContext.getUserId();
+        LuceneSearchVO result = tagService.recommend(id,pageNum,pageSize);
+        log.info("result:{}",result);
+        return Result.success(result);
     }
 }
