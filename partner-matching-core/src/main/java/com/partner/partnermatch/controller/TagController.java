@@ -4,6 +4,7 @@ import ai.onnxruntime.OrtException;
 import com.partner.partnermatch.common.Result;
 import com.partner.partnermatch.dto.TagUpdateRequest;
 import com.partner.partnermatch.pojo.LuceneSearchResult;
+import com.partner.partnermatch.pojo.vo.LuceneSearchVO;
 import com.partner.partnermatch.pojo.vo.TagVO;
 import com.partner.partnermatch.service.TagService;
 import org.apache.lucene.search.ScoreDoc;
@@ -37,19 +38,19 @@ public class TagController {
     }
 
     @GetMapping("/search/exact")
-    public Result<LuceneSearchResult> searchExact(@RequestParam String[] tags, @RequestParam int count,@RequestParam(required = false) ScoreDoc lastScoreDoc) throws IOException {
+    public Result<LuceneSearchVO> searchExact(@RequestParam String[] tags, @RequestParam int count, @RequestParam(required = false) ScoreDoc lastScoreDoc) throws IOException {
         if(lastScoreDoc == null) return Result.success(tagService.searchExactByTags(tags, count));
         else return Result.success(tagService.searchExactByTags(tags, count, lastScoreDoc));
     }
 
     @GetMapping("/search/fuzzy")
-    public Result<LuceneSearchResult> searchFuzzy(@RequestParam String[] tags, @RequestParam int count, @RequestParam(required = false) ScoreDoc lastScoreDoc) throws IOException {
+    public Result<LuceneSearchVO> searchFuzzy(@RequestParam String[] tags, @RequestParam int count, @RequestParam(required = false) ScoreDoc lastScoreDoc) throws IOException {
         if(lastScoreDoc == null) return Result.success(tagService.searchFuzzyByTags(tags, count));
         return Result.success(tagService.searchFuzzyByTags(tags, count, lastScoreDoc));
     }
 
     @GetMapping("/search/embedding")
-    public Result<LuceneSearchResult> searchEmbedding(@RequestParam String[] tags, @RequestParam int count, @RequestParam(required = false) ScoreDoc lastScoreDoc) throws IOException, OrtException {
+    public Result<LuceneSearchVO> searchEmbedding(@RequestParam String[] tags, @RequestParam int count, @RequestParam(required = false) ScoreDoc lastScoreDoc) throws IOException, OrtException {
         if(lastScoreDoc == null) return Result.success(tagService.searchByEmbedding(tags, count));
         else return Result.success(tagService.searchByEmbedding(tags, count, lastScoreDoc));
     }

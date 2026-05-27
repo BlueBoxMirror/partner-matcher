@@ -15,6 +15,7 @@ import com.partner.partnermatch.mapper.TagMapper;
 import com.partner.partnermatch.mapper.UserMapper;
 import com.partner.partnermatch.mapper.UserTagMapper;
 import com.partner.partnermatch.pojo.LuceneSearchResult;
+import com.partner.partnermatch.pojo.vo.LuceneSearchVO;
 import com.partner.partnermatch.pojo.vo.TagVO;
 import com.partner.partnermatch.pojo.vo.UserVO;
 import com.partner.partnermatch.service.LuceneStorageService;
@@ -50,59 +51,65 @@ public class TagServiceImpl implements TagService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Override
-    public LuceneSearchResult searchByTag(String tag, int count) throws IOException {
-        return luceneStorageService.searchByTag(tag, count);
+    private LuceneSearchVO toVO(LuceneSearchResult result){
+        ArrayList<Long> ids = new ArrayList<>();
+        for (long uid : result.getUserIds()) ids.add(uid);
+        return new LuceneSearchVO(userMapper.selectByIds(ids).stream().map(UserVO::new).toList(), result.getLastScoreDoc());
     }
 
     @Override
-    public LuceneSearchResult searchByTag(String tag, int count, ScoreDoc lastScoreDoc) throws IOException {
-        return luceneStorageService.searchByTag(tag, count, lastScoreDoc);
+    public LuceneSearchVO searchByTag(String tag, int count) throws IOException {
+        return toVO(luceneStorageService.searchByTag(tag, count));
     }
 
     @Override
-    public LuceneSearchResult searchByEmbedding(String[] tags, int count) throws IOException, OrtException {
+    public LuceneSearchVO searchByTag(String tag, int count, ScoreDoc lastScoreDoc) throws IOException {
+        return toVO(luceneStorageService.searchByTag(tag, count, lastScoreDoc));
+    }
+
+    @Override
+    public LuceneSearchVO searchByEmbedding(String[] tags, int count) throws IOException, OrtException {
         StringBuilder builder = new StringBuilder();
         for (String tag : tags) {
             builder.append(tag).append(" ");
         }
         float[] embedding = ragTransferService.encode(builder.toString());
-        return luceneStorageService.searchByEmbedding(embedding, count);
+        return toVO(luceneStorageService.searchByEmbedding(embedding, count));
     }
 
     @Override
-    public LuceneSearchResult searchByEmbedding(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException, OrtException {
+    public LuceneSearchVO searchByEmbedding(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException, OrtException {
         StringBuilder builder = new StringBuilder();
         for (String tag : tags) {
             builder.append(tag).append(" ");
         }
         float[] embedding = ragTransferService.encode(builder.toString());
-        return luceneStorageService.searchByEmbedding(embedding, count, lastScoreDoc);
+        return toVO(luceneStorageService.searchByEmbedding(embedding, count, lastScoreDoc));
     }
 
     @Override
-    public LuceneSearchResult searchExactByTags(String[] tags, int count) throws IOException {
-        return luceneStorageService.searchExactByTags(tags, count);
+    public LuceneSearchVO searchExactByTags(String[] tags, int count) throws IOException {
+        return toVO(luceneStorageService.searchExactByTags(tags, count));
     }
 
     @Override
-    public LuceneSearchResult searchExactByTags(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException {
-        return luceneStorageService.searchExactByTags(tags, count, lastScoreDoc);
+    public LuceneSearchVO searchExactByTags(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException {
+        return toVO(luceneStorageService.searchExactByTags(tags, count, lastScoreDoc));
     }
 
     @Override
-    public LuceneSearchResult searchFuzzyByTags(String[] tags, int count) throws IOException {
-        return luceneStorageService.searchFuzzyByTags(tags, count);
+    public LuceneSearchVO searchFuzzyByTags(String[] tags, int count) throws IOException {
+        return toVO(luceneStorageService.searchFuzzyByTags(tags, count));
     }
 
     @Override
-    public LuceneSearchResult searchFuzzyByTags(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException {
-        return luceneStorageService.searchFuzzyByTags(tags, count, lastScoreDoc);
+    public LuceneSearchVO searchFuzzyByTags(String[] tags, int count, ScoreDoc lastScoreDoc) throws IOException {
+        return toVO(luceneStorageService.searchFuzzyByTags(tags, count, lastScoreDoc));
     }
 
 
     @Override
-    public List<UserVO> recommend(long id, int pageNum, int pageSize) {
+    public LuceneSearchVO recommend(long id, int pageNum, int pageSize) {
         try {
             List<Map<String, Object>> tagMaps = userTagMapper.findTagsByUserIds(List.of(id));
             StringBuilder builder = new StringBuilder();
@@ -120,7 +127,8 @@ public class TagServiceImpl implements TagService {
             }
             List<Long> ids = new ArrayList<>();
             for (long uid : result.getUserIds()) ids.add(uid);
-            return userMapper.selectBatchIds(ids).stream().map(UserVO::new).toList();
+            List<UserVO> users=userMapper.selectBatchIds(ids).stream().map(UserVO::new).toList();
+            return new LuceneSearchVO(users, result.getLastScoreDoc());
         } catch (OrtException | IOException e) {
             throw new RuntimeException(e);
         }
