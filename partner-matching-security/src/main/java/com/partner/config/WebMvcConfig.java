@@ -15,20 +15,21 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/api/auth/login", "/api/auth/register",
-                        "/api/auth/send-code", "/api/auth/login-by-code",
-                        "/swagger-ui/**", "/v3/api-docs/**"); // 白名单可按需扩展
+                .excludePathPatterns(
+                        "/api/user/login",
+                        "/api/user/register",
+                        "/api/user/emailLogin",
+                        "/api/user/sendCode"
+                );
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-
         registry.addMapping("/**")
                 .allowedOriginPatterns("*")
-                .allowedMethods("*")
+                .allowedMethods("POST", "GET", "PUT", "DELETE", "OPTIONS") 
                 .allowedHeaders("*")
                 .allowCredentials(true)
                 .maxAge(3600);
