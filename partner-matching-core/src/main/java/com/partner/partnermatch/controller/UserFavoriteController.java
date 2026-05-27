@@ -1,10 +1,14 @@
 package com.partner.partnermatch.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.partner.partnermatch.common.Result;
+import com.partner.partnermatch.dto.FavoritePageRequest;
 import com.partner.partnermatch.dto.FavoriteToggleRequest;
+import com.partner.partnermatch.dto.FavoriteUserDto;
 import com.partner.partnermatch.service.UserFavoriteService;
-import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -17,45 +21,47 @@ public class UserFavoriteController {
         this.userFavoriteService = userFavoriteService;
     }
 
-
-      //切换收藏/取消收藏
-     //POST /favorite/toggle
+    // 1. 收藏/取消收藏（一键切换）
     @PostMapping("/toggle")
-    public Result<Boolean> toggleFavorite(@RequestBody FavoriteToggleRequest request,
-                                          HttpServletRequest httpRequest) {
-        Long userId = (Long) httpRequest.getSession().getAttribute("loginUserId");
-        boolean result = userFavoriteService.toggleCollection(userId, request.getCollectUserId());
-        return Result.success(result);
+    public Result<Boolean> toggle(@Validated @RequestBody FavoriteToggleRequest request,
+                                  HttpServletRequest httpRequest) {
+        // 后续替换为登录态获取userId，现在用固定值测试
+        Long userId = 1L;
+        boolean success = userFavoriteService.toggleCollection(userId, request.getCollectUserId());
+        return Result.success(success);
     }
 
-    //查询是否已收藏
-     //GET /favorite/check?collectUserId=xxx
-
+    // 2. 判断是否已收藏
     @GetMapping("/check")
-    public Result<Boolean> checkFavorite(@RequestParam Long collectUserId,
-                                         HttpServletRequest request) {
-        Long userId = (Long) request.getSession().getAttribute("loginUserId");
-        boolean isCollected = userFavoriteService.isCollected(userId, collectUserId);
-        return Result.success(isCollected);
+    public Result<Boolean> checkCollected(@RequestParam Long collectUserId, HttpServletRequest httpRequest) {
+        Long userId = 1L;
+        boolean collected = userFavoriteService.isCollected(userId, Math.toIntExact(collectUserId));
+        return Result.success(collected);
     }
 
-
-     //获取收藏用户ID列表
-     //GET /favorite/list
-
-    @GetMapping("/list")
-    public Result<List<Long>> listFavorite(HttpServletRequest request) {
-        Long userId = (Long) request.getSession().getAttribute("loginUserId");
+    // 3. 获取收藏用户ID列表（兼容旧逻辑）
+    @GetMapping("/listIds")
+    public Result<List<Long>> listFavoriteIds(HttpServletRequest httpRequest) {
+        Long userId = 1L;
         List<Long> ids = userFavoriteService.listFavoriteUserIds(userId);
         return Result.success(ids);
     }
 
+    // 4. 单独取消收藏（列表页用）
+    @PostMapping("/delete")
+    public Result<Boolean> deleteFavorite(@Validated @RequestBody FavoriteToggleRequest request,
+                                          HttpServletRequest httpRequest) {
+        Long userId = 1L;
+        boolean success = userFavoriteService.deleteFavorite(userId, request.getCollectUserId());
+        return Result.success(success);
+    }
 
-    @DeleteMapping("/delete")
-    public Result<Boolean> deleteFavorite(@RequestParam Long collectUserId,
-                                          HttpServletRequest request) {
-        Long userId = (Long) request.getSession().getAttribute("loginUserId");
-        boolean result = userFavoriteService.deleteFavorite(userId, collectUserId);
-        return Result.success(result);
+    // 5. 分页查询收藏列表（按收藏时间倒序）
+    @PostMapping("/list")
+    public Result<Page<FavoriteUserDto>> listFavorites(@Validated @RequestBody FavoritePageRequest request,
+                                                       HttpServletRequest httpRequest) {
+        Long userId = 1L;
+        Page<FavoriteUserDto> page = userFavoriteService.listFavoritesPage(userId, request);
+        return Result.success(page);
     }
 }

@@ -9,13 +9,13 @@ import java.util.Date;
 public class UserFavorite {
 
     @TableId(type = IdType.AUTO)
-    private Long id;
+    private Integer id;
 
     @TableField("user_id")
-    private Long userId;
+    private Integer userId;
 
     @TableField("collect_user_id")
-    private Long collectUserId;
+    private Integer collectUserId;
 
     @TableField(value = "created_at", fill = FieldFill.INSERT)
     private Date createdAt;
