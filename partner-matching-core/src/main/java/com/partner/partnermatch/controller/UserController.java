@@ -20,7 +20,7 @@ public class UserController {
     @Autowired private TagService tagService;
     @GetMapping("/recommend")
     public Result<LuceneSearchVO> recommend(@RequestParam(required = false,defaultValue = "0") Integer pageNum,@RequestParam(required = false,defaultValue = "10") Integer pageSize){
-        long id = 53;//UserContext.getUserId();
+        long id = UserContext.getUserId();
         LuceneSearchVO result = tagService.recommend(id,pageNum,pageSize);
         log.info("result:{}",result);
         return Result.success(result);
