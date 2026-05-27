@@ -35,7 +35,7 @@ public class UserFavoriteServiceImpl extends ServiceImpl<UserFavoriteMapper, Use
         } else {
             // 未收藏：新增收藏
             UserFavorite favorite = new UserFavorite();
-            favorite.setUserId(Math.toIntExact(userId));
+            favorite.setUserId((long) Math.toIntExact(userId));
             favorite.setCollectUserId(collectUserId);
             return save(favorite);
         }

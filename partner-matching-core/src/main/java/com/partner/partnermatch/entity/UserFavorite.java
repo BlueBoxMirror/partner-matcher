@@ -12,7 +12,7 @@ public class UserFavorite {
     private Integer id;
 
     @TableField("user_id")
-    private Integer userId;
+    private Long userId;
 
     @TableField("collect_user_id")
     private Integer collectUserId;
