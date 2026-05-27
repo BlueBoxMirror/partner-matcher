@@ -54,7 +54,14 @@ public class TagServiceImpl implements TagService {
     private LuceneSearchVO toVO(LuceneSearchResult result){
         ArrayList<Long> ids = new ArrayList<>();
         for (long uid : result.getUserIds()) ids.add(uid);
-        return new LuceneSearchVO(userMapper.selectByIds(ids).stream().map(UserVO::new).toList(), result.getLastScoreDoc());
+        return new LuceneSearchVO(ids.isEmpty()? List.of() : userMapper.selectByIds(ids).stream().map((user)->new UserVO(user, result.getScoreDocByUserId(user.getId()).score)).toList(), result.getLastScoreDoc());
+    }
+    private LuceneSearchVO toVO(LuceneSearchResult result,long excludeId){
+        ArrayList<Long> ids = new ArrayList<>();
+        for (long uid : result.getUserIds()){
+            if (uid != excludeId) ids.add(uid);
+        }
+        return new LuceneSearchVO(ids.isEmpty()? List.of() : userMapper.selectByIds(ids).stream().map((user)->new UserVO(user, result.getScoreDocByUserId(user.getId()).score)).toList(), result.getLastScoreDoc());
     }
 
     @Override
@@ -110,6 +117,7 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public LuceneSearchVO recommend(long id, int pageNum, int pageSize) {
+
         try {
             List<Map<String, Object>> tagMaps = userTagMapper.findTagsByUserIds(List.of(id));
             StringBuilder builder = new StringBuilder();
@@ -119,16 +127,13 @@ public class TagServiceImpl implements TagService {
             float[] embedding = ragTransferService.encode(builder.toString());
             LuceneSearchResult result = null;
             if(pageNum==0) {
-                result = luceneStorageService.searchByEmbedding(embedding, pageNum);
+                result = luceneStorageService.searchByEmbedding(embedding, pageSize);
             }
             else{
                 result = luceneStorageService.searchByEmbedding(embedding, pageNum*pageSize);
                 result = luceneStorageService.searchByEmbedding(embedding, pageNum*pageSize, result.getLastScoreDoc());
             }
-            List<Long> ids = new ArrayList<>();
-            for (long uid : result.getUserIds()) ids.add(uid);
-            List<UserVO> users=userMapper.selectBatchIds(ids).stream().map(UserVO::new).toList();
-            return new LuceneSearchVO(users, result.getLastScoreDoc());
+            return toVO(result,id);
         } catch (OrtException | IOException e) {
             throw new RuntimeException(e);
         }

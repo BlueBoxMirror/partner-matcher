@@ -14,6 +14,10 @@ public class UserVO {
     private String avatarUri;
     private String profile;
     private Integer gender;
+    private Long id;
+    private String username;
+
+    private float luceneScore;
 
     public UserVO(AIUser user){
         this.id = user.getId();
@@ -23,6 +27,8 @@ public class UserVO {
         this.avatarUri = user.getAvatarUri();
         this.tags = user.getTags();
     }
-    private Long id;
-    private String username;
+    public UserVO(AIUser user, float luceneScore){
+        this(user);
+        this.luceneScore = luceneScore;
+    }
 }

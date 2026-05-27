@@ -32,8 +32,11 @@ public class TagServiceTest {
         }
     }
     @Test
+    public void testRecommend() {
+        System.out.println(tagService.recommend(53, 0, 10));
+    }
+    @Test
     public void fakeData(){
-
         userMapper.delete(new QueryWrapper<AIUser>().like("username", "小_"));
         userMapper.insert(List.of(
                 AIUser.builder().username("小A").qqEmail("123@qq.com").password("123".getBytes()).build(),
