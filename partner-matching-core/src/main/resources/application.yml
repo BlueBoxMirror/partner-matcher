@@ -20,7 +20,7 @@ spring:
       database: 1
   # 不配 RabbitMQ 的同事设置 enabled: false 即可启动
   rabbitmq:
-    enabled: false
+    enabled: true
     host: localhost
     port: 5672
     username: ${config.rabbitmq.username:guest}
@@ -48,7 +48,3 @@ spring:
 jwt:
   secret: partner-matching-jwt-secret-2025-must-be-at-least-256-bits-long
   expiration: 86400000
-management:
-  health:
-    rabbit:
-      enabled: false
