@@ -25,7 +25,7 @@ public interface UserFavoriteMapper {
             "uf.collect_user_id AS collectUserId, " +
             "u.id AS id, " +
             "u.username AS username, " +
-            "u.avatar_url AS avatar, " +
+            "u.avatar_uri AS avatar, " +
             "uf.create_time AS createdAt " +
             "FROM user_collections uf " +
             "LEFT JOIN users u ON uf.collect_user_id = u.id " +
