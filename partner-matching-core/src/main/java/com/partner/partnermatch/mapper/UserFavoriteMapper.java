@@ -1,7 +1,7 @@
 package com.partner.partnermatch.mapper;
 
 import com.partner.partnermatch.dto.FavoriteUserDto;
-import com.partner.partnermatch.entity.UserFavorite;
+
 import org.apache.ibatis.annotations.*;
 
 
@@ -20,11 +20,11 @@ public interface UserFavoriteMapper {
     @Delete("DELETE FROM user_collections WHERE user_id = #{userId} AND collect_user_id = #{collectUserId}")
     void deleteFavorite(@Param("userId") Long userId, @Param("collectUserId") Long collectUserId);
 
-    // 关键修改：SQL 别名和你 DTO 字段完全对应
     @Select("SELECT " +
             "uf.collect_user_id AS collectUserId, " +
             "u.id AS id, " +
             "u.username AS username, " +
+            "u.gender AS gender, "+
             "u.avatar_uri AS avatar, " +
             "uf.created_at AS createdAt " +
             "FROM user_collections uf " +
