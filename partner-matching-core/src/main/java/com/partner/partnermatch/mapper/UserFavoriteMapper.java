@@ -27,8 +27,8 @@ public interface UserFavoriteMapper {
             "u.username AS username, " +
             "u.avatar_url AS avatar, " +
             "uf.create_time AS createdAt " +
-            "FROM user_favorite uf " +
-            "LEFT JOIN user u ON uf.collect_user_id = u.id " +
+            "FROM user_collectins uf " +
+            "LEFT JOIN users u ON uf.collect_user_id = u.id " +
             "WHERE uf.user_id = #{userId}")
     List<FavoriteUserDto> selectFavoriteList(@Param("userId") Long userId);
 }
