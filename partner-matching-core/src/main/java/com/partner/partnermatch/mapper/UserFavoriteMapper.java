@@ -26,6 +26,7 @@ public interface UserFavoriteMapper {
             "u.username AS username, " +
             "u.gender AS gender, "+
             "u.avatar_uri AS avatar, " +
+            "u.tags AS tags, " +
             "uf.created_at AS createdAt " +
             "FROM user_collections uf " +
             "LEFT JOIN users u ON uf.collect_user_id = u.id " +

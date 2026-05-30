@@ -9,6 +9,7 @@ public class FavoriteUserDto {
     private Integer id; // 收藏记录ID
     private Long collectUserId; // 被收藏用户ID
     private String username; // 用户名
+    private Integer gender;
     private String avatar; // 用户头像
     private Date createdAt; // 收藏时间
     private List<TagDto> tags; // 用户标签
