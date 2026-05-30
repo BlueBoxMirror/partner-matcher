@@ -22,7 +22,7 @@ public interface UserFavoriteMapper {
 
     @Select("SELECT " +
             "uf.collect_user_id AS collectUserId, " +
-            "u.id AS id, " +
+            "uf.id AS id, " +
             "u.username AS username, " +
             "u.gender AS gender, "+
             "u.avatar_uri AS avatar, " +
