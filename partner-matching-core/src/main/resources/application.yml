@@ -20,7 +20,7 @@ spring:
       database: 1
   # 不配 RabbitMQ 的同事设置 enabled: false 即可启动
   rabbitmq:
-    enabled: true
+    enabled: false
     host: localhost
     port: 5672
     username: ${config.rabbitmq.username:guest}
