@@ -21,11 +21,7 @@ public class UserFavoriteServiceImpl implements UserFavoriteService {
         if (count > 0) {
             userFavoriteMapper.deleteFavorite(userId, collectUserId);
         } else {
-            UserFavorite favorite = new UserFavorite();
-            favorite.setUserId(userId);
-            favorite.setCollectUserId(collectUserId);
-            favorite.setCreatedAt(new Date());
-            userFavoriteMapper.insertFavorite(favorite);
+            userFavoriteMapper.insertFavorite(userId, collectUserId);
         }
     }
 

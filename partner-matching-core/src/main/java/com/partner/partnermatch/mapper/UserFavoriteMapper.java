@@ -11,13 +11,13 @@ import java.util.List;
 @Mapper
 public interface UserFavoriteMapper {
 
-    @Select("SELECT COUNT(*) FROM user_favorite WHERE user_id = #{userId} AND collect_user_id = #{collectUserId}")
+    @Select("SELECT COUNT(*) FROM user_collections WHERE user_id = #{userId} AND collect_user_id = #{collectUserId}")
     int selectCount(@Param("userId") Long userId, @Param("collectUserId") Long collectUserId);
 
-    @Insert("INSERT INTO user_favorite(user_id, collect_user_id, create_time) VALUES(#{userId}, #{collectUserId}, NOW())")
-    void insertFavorite(UserFavorite favorite);
+    @Insert("INSERT INTO user_collections(user_id, collect_user_id, created_at) VALUES(#{userId}, #{collectUserId}, NOW())")
+    void insertFavorite(@Param("userId") Long userId, @Param("collectUserId") Long collectUserId);
 
-    @Delete("DELETE FROM user_favorite WHERE user_id = #{userId} AND collect_user_id = #{collectUserId}")
+    @Delete("DELETE FROM user_collections WHERE user_id = #{userId} AND collect_user_id = #{collectUserId}")
     void deleteFavorite(@Param("userId") Long userId, @Param("collectUserId") Long collectUserId);
 
     // 关键修改：SQL 别名和你 DTO 字段完全对应
@@ -26,7 +26,7 @@ public interface UserFavoriteMapper {
             "u.id AS id, " +
             "u.username AS username, " +
             "u.avatar_uri AS avatar, " +
-            "uf.create_time AS createdAt " +
+            "uf.created_at AS createdAt " +
             "FROM user_collections uf " +
             "LEFT JOIN users u ON uf.collect_user_id = u.id " +
             "WHERE uf.user_id = #{userId}")
