@@ -48,3 +48,7 @@ spring:
 jwt:
   secret: partner-matching-jwt-secret-2025-must-be-at-least-256-bits-long
   expiration: 86400000
+management:
+  health:
+    rabbit:
+      enabled: false
