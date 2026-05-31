@@ -1,3 +1,3 @@
-CREATE DATABASE IF NOT EXISTS parter_matcher;
+CREATE DATABASE IF NOT EXISTS partner_matcher;
 USE partner_matcher;
 

@@ -1,15 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="cxlab.partnermatcher.mapper.UserMapper">
-
-    <!-- 1. 把id改成和接口方法名完全一致：selectByUsernameOrEmail -->
+    <!-- 登录查询SQL -->
     <select id="selectByUsernameOrEmail" resultType="cxlab.partnermatcher.pojo.User">
         SELECT id, username, qq_email AS qqEmail, password
         FROM users
-        <!-- 2. 把#{account}改成#{keyword}，和接口里的@Param("keyword")对应 -->
         WHERE username = #{keyword} OR qq_email = #{keyword}
     </select>
 
+    <!-- 注册插入SQL -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (
+            username,
+            password,
+            qq_email,
+            gender,
+            avatar_uri,
+            profile,
+            collect_number,
+            tags
+        ) VALUES (
+                     #{username},
+                     #{password},
+                     #{qqEmail},
+                     #{gender},
+                     #{avatarUri},
+                     #{profile},
+                     #{collectNumber},
+                     #{tags}
+                 )
+    </insert>
 </mapper>

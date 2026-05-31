@@ -1,24 +1,21 @@
 spring:
-  config:
-    import:
-      - classpath:config.yml
   output:
     ansi:
       enabled: always
   application:
     name: PartnerMatcher
   datasource:
-    url: jdbc:mysql://localhost:3306/partner_matcher
-    username: ${config.mysql.username}
-    password: ${config.mysql.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
-  redis:
-    host: localhost
-    port: 6379
-    password: ${config.redis.password}
-    database: 0
+    url: jdbc:mysql://localhost:3306/partner_matcher?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: 123456
+  # 注释掉整个redis配置，避免连接失败影响启动
+  # redis:
+  #   host: localhost
+  #   port: 6379
+  #   password:
+  #   database: 0
 
 mybatis:
   mapper-locations:
     - classpath:mapper/**/*.xml
-
