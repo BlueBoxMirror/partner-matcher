@@ -31,7 +31,6 @@ public class UserController {
         }
     }
 
-    // 新增注册接口
     @PostMapping("/register")
     public Result<User> register(@RequestBody User user) {
         try {

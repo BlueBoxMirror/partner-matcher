@@ -20,8 +20,6 @@ public class UserServiceImpl implements UserService {
     public UserServiceImpl(UserMapper userMapper) {
         this.userMapper = userMapper;
     }
-
-    // 登录逻辑（完全不变，和之前一模一样）
     @Override
     public UserLoginResponse login(UserLoginRequest loginRequest) {
         String username = loginRequest.getUsername();
@@ -37,7 +35,6 @@ public class UserServiceImpl implements UserService {
         }
 
         try {
-            // 和注册完全一致的加密逻辑
             MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
             byte[] inputPwdBytes = sha256.digest(pwd.getBytes(StandardCharsets.UTF_8));
 
@@ -52,7 +49,6 @@ public class UserServiceImpl implements UserService {
         return new UserLoginResponse(token, user.getId(), user.getUsername(), user.getQqEmail());
     }
 
-    // 注册逻辑（只改了3行，其他完全不变）
     @Override
     @Transactional
     public User register(User user) {
@@ -62,22 +58,19 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("用户名和密码不能为空");
         }
 
-        // 2. 检查用户名是否已存在
         User existUser = userMapper.selectByUsernameOrEmail(user.getUsername());
         if (existUser != null) {
             throw new RuntimeException("用户名已被注册");
         }
 
-        // 3. 密码加密（和登录逻辑完全一致）
         try {
             MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
             byte[] encryptedPwd = sha256.digest(user.getPwd().getBytes(StandardCharsets.UTF_8));
-            user.setPassword(encryptedPwd); // 存到数据库的password字段，完全不变
+            user.setPassword(encryptedPwd);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("密码加密失败");
         }
 
-        // 4. 补充默认值
         if (user.getQqEmail() == null) {
             user.setQqEmail("");
         }
@@ -91,9 +84,7 @@ public class UserServiceImpl implements UserService {
             user.setTags("[]");
         }
 
-        // 5. 插入数据库
         userMapper.insert(user);
-        // 6. 清空明文密码再返回（安全）
         user.setPwd(null);
         return user;
     }

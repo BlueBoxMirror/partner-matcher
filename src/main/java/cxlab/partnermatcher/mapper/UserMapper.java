@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface UserMapper {
     User selectByUsernameOrEmail(@Param("keyword") String keyword);
-    int insert(User user); // 新增插入用户方法
+    int insert(User user);
 }

@@ -6,5 +6,5 @@ import cxlab.partnermatcher.pojo.dto.UserLoginResponse;
 
 public interface UserService {
     UserLoginResponse login(UserLoginRequest loginRequest);
-    User register(User user); // 新增注册方法
+    User register(User user);
 }
