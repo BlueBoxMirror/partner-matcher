@@ -64,6 +64,9 @@ CREATE TABLE `api_log` (
 CREATE TABLE teams (
     id INT AUTO_INCREMENT PRIMARY KEY,  -- 队伍ID
     creator_user_id INT NOT NULL, -- 创建者用户ID
+    member_num VARCHAR(10) NOT NULL DEFAULT 0, -- 队伍当前人数
+    type VARCHAR(50) NOT NULL DEFAULT '', -- 队伍类型
+    members JSON   NOT NULL, -- 成员ID
     team_name VARCHAR(32) NOT NULL, -- 队伍名称
     password VARCHAR(8), -- 密码
     description TEXT, -- 描述
